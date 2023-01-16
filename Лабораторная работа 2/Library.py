@@ -1,5 +1,3 @@
-from pydantic import BaseModel
-from typing import List
 
 BOOKS_DATABASE = [
     {
@@ -15,20 +13,45 @@ BOOKS_DATABASE = [
 ]
 
 
-class Book(BaseModel):
-    id: int
-    name: str
-    pages: int
+class Book:
+    def __init__(self, id: int, name: str, pages: int):
+        """
+
+        :param id: идентификатор книги
+        :param name: Название книги
+        :param pages: Количество страниц в книге
+        """
+
+        if not isinstance(id, int):
+            raise TypeError("Идентификатор книги должен быть типа int")
+        self.id = id
+
+        if not isinstance(name, str):
+            raise TypeError("Название книги должно быть типа str")
+        self.name = name
+
+        if not isinstance(pages, int):
+            raise TypeError("Количество страниц в книге должно быть типа int")
+        self.pages = pages
+
+    def __str__(self) -> str:
+        return f'Книга "{self.name}"'
+
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}(id_={self.id}, name='{self.name!r}', pages={self.pages})"
 
 
-class Library(BaseModel):
-    books: List[Book] = []
+class Library:
+    def __init__(self, books=None):
+        if books is None:
+            books = []
+        self.books = books
 
     def get_next_book_id(self):
         if not self.books:
             return 1
         else:
-            return self.books[-1].id + 1
+            return self.books[-1].id+1
 
     def get_index_by_book_id(self, ind: int):
         for i in range(0, len(self.books)):
